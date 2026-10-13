@@ -38,6 +38,6 @@ The live result proves a small text-context coding handoff on this Codex desktop
 
 Claude Code/Chrome and Antigravity/browser are documented adapters based on their official capabilities, not live-tested integrations in this release. Other MCP clients must be configured and verified in their own host. The MCP reference-client test validates the server, not those clients' UI/configuration.
 
-GitHub CI runs Node.js 22 and 24 checks on Linux. Refer to the actual Actions run for its observed status; local results are not a substitute for that run.
+GitHub CI passed on Linux with **Node.js 22 and 24** for the initial implementation commit `d8067b4`. Both jobs ran dependency installation, `npm run check`, and `npm run demo:test`. [Observed Actions run](https://github.com/yanuarihsanxz-tech/prorelay/actions/runs/38485535721). Refer to Actions for later commits; these results describe the observed run rather than a permanent guarantee.
 
 Provider limits, login, CAPTCHA, host permissions, and inactive sessions can stop execution. The project provides checkpoint recovery; it does not bypass those conditions or supply a persistent background runner.
