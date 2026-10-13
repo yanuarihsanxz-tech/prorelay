@@ -1,0 +1,24 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
+const exec = promisify(execFile);
+const cli = fileURLToPath(new URL('../src/cli.js', import.meta.url));
+test('CLI prepares and resumes across processes; install is scoped and refuses replacement', async t => {
+  const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'prorelay-cli-')));
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+  await fs.writeFile(path.join(root, 'brief.md'), 'Review the project.');
+  const run = async (...args) => JSON.parse((await exec(process.execPath, [cli, ...args, '--root', root])).stdout);
+  assert.equal((await run('doctor')).browser.status, 'host-check-required');
+  const task = await run('prepare', '--brief-file', 'brief.md');
+  await run('mark', task.id, '--status', 'paused', '--note', 'User review pending.');
+  assert.equal((await run('resume', task.id)).status, 'prepared');
+  const install = await run('install-skill', '--host', 'claude');
+  assert.equal(install.installedAt, path.join(root, '.claude/skills/prorelay'));
+  assert.equal(JSON.parse(await fs.readFile(path.join(install.installedAt, 'runtime.json'), 'utf8')).workspace, root);
+  await assert.rejects(run('install-skill', '--host', 'claude'), /already exists/);
+});

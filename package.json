@@ -1,0 +1,19 @@
+{
+  "name": "prorelay",
+  "version": "0.1.0",
+  "description": "Bring your AI subscription into your local coding workflow: scoped files, durable handoffs, and agent-driven browser exchange.",
+  "type": "module",
+  "private": true,
+  "bin": { "prorelay": "src/cli.js" },
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/cli.js && node --check src/workspace.js && node --check src/tasks.js && node --check src/mcp.js && npm test",
+    "demo:test": "node --test examples/demo-project/range.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "zod": "^3.25.76"
+  },
+  "license": "MIT"
+}
